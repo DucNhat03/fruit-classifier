@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fruit Classifier - Nhóm 3DM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+        }
+        .btn-predict {
+            background-color: #198754;
+            border: none;
+        }
+        .btn-predict:hover {
+            background-color: #157347;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Header -->
+    <div class="header text-center">
+        <h2>🎓 Nhóm DA 3M - Fruit Classifier</h2>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Hệ thống phân loại trái cây 🍌</h3>
+
+                <!-- Upload Form -->
+                <form method="POST" enctype="multipart/form-data" class="mb-4">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Chọn ảnh trái cây:</label>
+                        <input type="file" name="image" id="image" class="form-control" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-predict btn-lg text-white">🔍 Dự đoán</button>
+                    </div>
+                </form>
+
+                <!-- Results -->
+                {% if image_path %}
+                    <div class="text-center">
+                        <h5 class="mb-3">Ảnh bạn đã tải lên</h5>
+                        <img src="{{ image_path }}" alt="Uploaded Image" class="img-thumbnail mb-4" style="max-width: 300px;">
+
+                        <h5 class="mb-3">🔎 Kết quả dự đoán</h5>
+                        <div class="alert alert-success" role="alert">
+                            <strong>🌳 Random Forest:</strong> {{ rf_label }}
+                        </div>
+                        <div class="alert alert-info" role="alert">
+                            <strong>🤖 SVM:</strong> {{ svm_label }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Nhóm 3DM - Thành viên: Nguyễn Đức Nhật - Nguyễn Hồng Danh - Nguyễn Trần Hải Đăng</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

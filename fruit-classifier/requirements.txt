@@ -1,0 +1,5 @@
+Flask==2.2.5
+opencv-python
+numpy
+joblib
+scikit-learn
