@@ -53,8 +53,11 @@ python app.py
 - Reduce dimensionality using PCA (pca.pkl)
 
 ## ✨ Example Output:
-Random Forest: Apple 5
-SVM: Apple 5
+> Input:
+![image](https://github.com/user-attachments/assets/4b34a54d-e632-4fe1-90b1-f16f1dd3afd4)
+> Output:
+![image](https://github.com/user-attachments/assets/f050f077-c631-42af-8553-c77cc4294728)
+
 
 ## 🙋‍♂️ Author: Duc Nhat
 GitHub: https://github.com/DucNhat03
