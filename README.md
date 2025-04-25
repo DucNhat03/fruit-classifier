@@ -54,9 +54,11 @@ python app.py
 
 ## ✨ Example Output:
 > Input:
-![image](https://github.com/user-attachments/assets/4b34a54d-e632-4fe1-90b1-f16f1dd3afd4)
+![image](https://github.com/user-attachments/assets/8fc7e0ff-e2d9-4a29-b25b-3f9e7247556f)
+
 > Output:
-![image](https://github.com/user-attachments/assets/f050f077-c631-42af-8553-c77cc4294728)
+![image](https://github.com/user-attachments/assets/610726ec-672d-4d74-a2e8-0bef8dc23ed7)
+
 
 
 ## 🙋‍♂️ Author: Duc Nhat
