@@ -2,67 +2,473 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fruit Classifier - Nhóm 3DM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .header {
-            background-color: #343a40;
-            color: white;
-            padding: 20px 0;
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --accent-color: #FF9800;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
         }
-        .footer {
+        
+        body {
+            background-color: #f0f3f5;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/diamond-upholstery.png');
+            opacity: 0.1;
+        }
+        
+        .header h2 {
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .app-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        
+        .card-header h3 {
+            color: var(--dark-color);
+            font-weight: 700;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .btn-predict {
+            background: linear-gradient(to right, var(--primary-color), #2E7D32);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+        }
+        
+        .btn-predict:hover {
+            background: linear-gradient(to right, #2E7D32, var(--primary-color));
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .upload-area.drag-over {
+            border-color: var(--primary-color);
+            background-color: #f0f9f0;
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            color: #aaa;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover .upload-icon {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        .result-section {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        .result-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .result-header {
+            padding: 15px;
+            text-align: center;
             background-color: #f8f9fa;
-            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .uploaded-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        
+        .uploaded-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .uploaded-image:hover {
+            transform: scale(1.03);
+        }
+        
+        .prediction-result {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .prediction-result:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .result-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .rf-icon {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .svm-icon {
+            background-color: rgba(33, 150, 243, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .probability-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .probability-fill {
+            height: 100%;
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 1.5s cubic-bezier(0.12, 0.89, 0.39, 0.96);
+        }
+        
+        .rf-fill {
+            background: linear-gradient(to right, #43A047, #2E7D32);
+        }
+        
+        .svm-fill {
+            background: linear-gradient(to right, #42A5F5, #1976D2);
+        }
+        
+        .confidence-level {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px 0;
             text-align: center;
             font-size: 0.9rem;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
+            margin-top: 50px;
         }
-        .btn-predict {
-            background-color: #198754;
-            border: none;
+        
+        .footer p {
+            margin-bottom: 5px;
         }
-        .btn-predict:hover {
-            background-color: #157347;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .fruit-result {
+            animation: slideIn 0.5s forwards;
+        }
+        
+        /* File input custom styling */
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        #image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .fruit-icon {
+            font-size: 1.5rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        
+        .match-banner {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            animation: fadeIn 0.8s;
+        }
+        
+        .fruit-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .model-badge {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-right: 5px;
+            font-weight: normal;
+        }
+        
+        .final-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .final-result.match {
+            border-left-color: var(--primary-color);
+        }
+        
+        .final-result.mismatch {
+            border-left-color: var(--accent-color);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--primary-color);
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
     <!-- Header -->
     <div class="header text-center">
-        <h2>🎓 Nhóm DA 3M - Fruit Classifier</h2>
+        <div class="container">
+            <h2><i class="fas fa-apple-alt"></i> Nhóm 3DM - Fruit Classifier</h2>
+            <p class="mb-0 mt-2">Ứng dụng phân loại trái cây sử dụng Machine Learning</p>
+        </div>
     </div>
 
     <!-- Main Content -->
-    <div class="container py-5">
-        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+    <div class="container py-4">
+        <div class="app-card card mx-auto" style="max-width: 800px;">
+            <div class="card-header">
+                <h3 class="text-center mb-0"><span class="fruit-icon">🍉</span> Hệ thống phân loại trái cây</h3>
+            </div>
             <div class="card-body">
-                <h3 class="text-center mb-4">Hệ thống phân loại trái cây 🍌</h3>
-
                 <!-- Upload Form -->
-                <form method="POST" enctype="multipart/form-data" class="mb-4">
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Chọn ảnh trái cây:</label>
-                        <input type="file" name="image" id="image" class="form-control" required>
+                <form method="POST" enctype="multipart/form-data" class="mb-4" id="predict-form">
+                    <div class="upload-area" id="drop-area">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h5>Tải lên hoặc kéo thả ảnh trái cây</h5>
+                        <p class="text-muted">Hỗ trợ JPEG, PNG, JPG (Max: 5MB)</p>
+                        <div class="file-input-container">
+                            <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
+                        </div>
+                        <img id="image-preview" src="#" alt="Preview">
                     </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-predict btn-lg text-white">🔍 Dự đoán</button>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-predict btn-lg text-white" id="predict-btn">
+                            <i class="fas fa-search me-2"></i> Phân tích & Dự đoán
+                        </button>
                     </div>
                 </form>
+                
+                <!-- Loading indicator -->
+                <div class="loading" id="loading">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <p class="mt-3 text-muted">Đang phân tích ảnh...</p>
+                </div>
 
                 <!-- Results -->
                 {% if image_path %}
-                    <div class="text-center">
-                        <h5 class="mb-3">Ảnh bạn đã tải lên</h5>
-                        <img src="{{ image_path }}" alt="Uploaded Image" class="img-thumbnail mb-4" style="max-width: 300px;">
-
-                        <h5 class="mb-3">🔎 Kết quả dự đoán</h5>
-                        <div class="alert alert-success" role="alert">
-                            <strong>🌳 Random Forest:</strong> {{ rf_label }}
-                        </div>
-                        <div class="alert alert-info" role="alert">
-                            <strong>🤖 SVM:</strong> {{ svm_label }}
+                    <div class="result-section mt-5">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="result-card h-100">
+                                    <div class="result-header">
+                                        <h5 class="mb-0"><i class="fas fa-image me-2"></i> Ảnh đã tải lên</h5>
+                                    </div>
+                                    <div class="p-3 text-center d-flex align-items-center justify-content-center" style="min-height: 300px;">
+                                        <div class="uploaded-image-container">
+                                            <img src="{{ image_path }}" alt="Uploaded Image" class="uploaded-image">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-7">
+                                <div class="result-card h-100">
+                                    <div class="result-header">
+                                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Kết quả phân tích</h5>
+                                    </div>
+                                    
+                                    <div class="p-3">
+                                        <!-- Random Forest Result -->
+                                        <div class="prediction-result bg-light fruit-result" style="animation-delay: 0.2s">
+                                            <div class="result-icon rf-icon">
+                                                <i class="fas fa-tree"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h5 class="mb-1">Random Forest</h5>
+                                                    <span class="badge bg-success model-badge">ML</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="fruit-label text-success">{{ rf_label }}</span>
+                                                    <span class="confidence-level">Độ tin cậy: <strong>{{rf_confidence}}</strong></span>
+                                                </div>
+                                                <div class="probability-bar">
+                                                    <div class="probability-fill rf-fill" style="width: 0%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- SVM Result -->
+                                        <div class="prediction-result bg-light fruit-result" style="animation-delay: 0.4s">
+                                            <div class="result-icon svm-icon">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h5 class="mb-1">Support Vector Machine</h5>
+                                                    <span class="badge bg-primary model-badge">ML</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="fruit-label text-primary">{{ svm_label }}</span>
+                                                    <span class="confidence-level">Độ tin cậy: <strong>{{svm_confidence}}</strong></span>
+                                                </div>
+                                                <div class="probability-bar">
+                                                    <div class="probability-fill svm-fill" style="width: 0%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Final Result -->
+                                        <div class="final-result {% if rf_label == svm_label %}match{% else %}mismatch{% endif %} fruit-result" style="animation-delay: 0.6s">
+                                            <div class="d-flex align-items-center">
+                                                {% if rf_label == svm_label %}
+                                                    <div class="me-3">
+                                                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-1">Kết quả thống nhất</h5>
+                                                        <p class="mb-0">Cả hai mô hình đều nhận diện đây là: <strong class="text-success">{{ rf_label }}</strong></p>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="me-3">
+                                                        <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-1">Kết quả không đồng nhất</h5>
+                                                        <p class="mb-0">Random Forest: <strong class="text-success">{{ rf_label }}</strong><br>
+                                                        SVM: <strong class="text-primary">{{ svm_label }}</strong></p>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endif %}
@@ -71,10 +477,87 @@
     </div>
 
     <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2025 Nhóm 3DM - Thành viên: Nguyễn Đức Nhật - Nguyễn Hồng Danh - Nguyễn Trần Hải Đăng</p>
+    <div class="footer mt-5">
+        <div class="container">
+            <p>&copy; 2025 Nhóm 3DM - Phân tích dữ liệu và Machine Learning</p>
+            <small>Thành viên: Nguyễn Đức Nhật (Nhóm trưởng) - Nguyễn Hồng Danh - Nguyễn Trần Hải Đăng</small>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Progress bar animation
+            setTimeout(function() {
+                const rfFill = document.querySelector('.rf-fill');
+                const svmFill = document.querySelector('.svm-fill');
+                
+                if (rfFill) rfFill.style.width = '87%';
+                if (svmFill) svmFill.style.width = '92%';
+            }, 300);
+            
+            // Image preview functionality
+            document.getElementById('image').addEventListener('change', function(e) {
+                const preview = document.getElementById('image-preview');
+                const file = e.target.files[0];
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Form submission with loading indicator
+            document.getElementById('predict-form').addEventListener('submit', function() {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('predict-btn').disabled = true;
+            });
+            
+            // Drag and drop functionality
+            const dropArea = document.getElementById('drop-area');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('drag-over');
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('drag-over');
+            }
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length) {
+                    document.getElementById('image').files = files;
+                    const event = new Event('change');
+                    document.getElementById('image').dispatchEvent(event);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
